@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="nl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Advent Hart</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap");
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background: linear-gradient(145deg, #ffe4ec, #ffd6e1);
+        font-family: "Quicksand", sans-serif;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Floating hearts in background */
+      body::before {
+        content: "💖 💕 💗 💘 💓 💞";
+        font-size: 50px;
+        opacity: 0.05;
+        position: absolute;
+        top: 10%;
+        left: 10%;
+        transform: rotate(-20deg);
+        white-space: pre;
+        z-index: 0;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #ffeef3;
+        color: #d94a74;
+        border: 2px solid #f4a3b3;
+        cursor: pointer;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #fcd6e1;
+        transform: scale(1.05);
+      }
+
+      .heart {
+        position: relative;
+        width: 1200px; /* Vergroot het hart */
+        height: 1200px; /* Vergroot het hart */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 50%;
+      }
+
+      /* Verwijder de vorige kleur van het hart */
+      .heart svg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        opacity: 1;
+        fill: url(#heart-pattern);
+      }
+
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        gap: 10px;
+        position: absolute;
+        top: 48%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 2;
+      }
+
+      .day {
+        width: 70px;
+        height: 70px;
+        background-color: #fff0f5;
+        color: #d94a74;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 20px;
+        border-radius: 14px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+        z-index: 2;
+        transition: transform 0.3s, background-color 0.3s;
+      }
+
+      .day:hover {
+        transform: scale(1.08);
+        background-color: #ffe0ea;
+      }
+
+      .locked {
+        background-color: #d8cfd0;
+        color: #9f9f9f;
+        cursor: not-allowed;
+        opacity: 0.6;
+      }
+
+      .button-container {
+        position: absolute;
+        top: 65%;
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        z-index: 3;
+      }
+
+      .month-name {
+        position: absolute;
+        top: 20%;
+        font-size: 50px;
+        color: #fff;
+        font-weight: bold;
+        font-family: "Pacifico", cursive;
+        z-index: 3;
+        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
+      }
+
+      .day.opened {
+        background-color: #f26a8d;
+        color: white;
+      }
+
+      .day.opened::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 0%;
+        height: 100%;
+        background-color: white;
+        z-index: 1;
+        transform: translate(-50%, -50%);
+        animation: openCenter 0.5s forwards;
+      }
+
+      @keyframes openCenter {
+        0% {
+          width: 0%;
+        }
+        100% {
+          width: 90%;
+        }
+      }
+
+      .letter {
+        position: absolute;
+        background-color: #fff0f5;
+        border: 2px solid #f4a3b3;
+        border-radius: 14px;
+        padding: 15px 25px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #b03a63;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+        text-align: center;
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s, transform 0.4s;
+        transform: translate(-50%, -50%) scale(0.1);
+        max-width: 80%;
+      }
+
+      .letter.show {
+        opacity: 1;
+        transform: translate(-50%, -250%) scale(1);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="main-container">
+      <div class="heart-calendar-container">
+        <div class="heart">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <defs>
+              <!-- Definieer een patroon met de afbeelding -->
+              <pattern
+                id="heart-pattern"
+                patternUnits="userSpaceOnUse"
+                width="100%"
+                height="100%"
+              >
+                <!-- Zet hier de link naar je afbeelding -->
+                <image
+                  href="red.jpg"
+                  x="0"
+                  y="0"
+                  width="100%"
+                  height="100%"
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </pattern>
+            </defs>
+
+            <!-- De hartvorm wordt gevuld met de afbeelding -->
+            <path
+              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+            />
+          </svg>
+
+          <div class="calendar" id="calendar"></div>
+          <div class="button-container">
+            <button class="prev-button" onclick="prevMonth()">◀</button>
+            <button class="next-button" onclick="nextMonth()">▶</button>
+          </div>
+          <span class="month-name" id="monthName">April</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const months = [
+        "Januari",
+        "Februari",
+        "Maart",
+        "April",
+        "Mei",
+        "Juni",
+        "Juli",
+        "Augustus",
+        "September",
+        "Oktober",
+        "November",
+        "December",
+      ];
+
+      let today = new Date();
+      let currentMonth = today.getMonth();
+      let currentDay = today.getDate();
+      let currentYear = today.getFullYear();
+      let messagesPerMonth = {};
+
+      let firstVisitDate;
+
+      fetch("./messages.json")
+        .then((response) => response.json())
+        .then((data) => {
+          messagesPerMonth = data;
+          checkFirstVisit();
+          updateCalendar();
+        })
+        .catch((error) =>
+          console.error("Fout bij het laden van het JSON-bestand:", error)
+        );
+
+      function getMessage(month, day) {
+        if (messagesPerMonth[month] && messagesPerMonth[month][day]) {
+          return messagesPerMonth[month][day];
+        } else {
+          return "Een mooie dag gewenst 💌";
+        }
+      }
+
+      function checkFirstVisit() {
+        const stored = localStorage.getItem("firstVisitDate");
+        if (!stored) {
+          localStorage.setItem("firstVisitDate", today.toISOString());
+          firstVisitDate = new Date(today);
+        } else {
+          firstVisitDate = new Date(stored);
+        }
+      }
+
+      function updateCalendar() {
+        const calendar = document.getElementById("calendar");
+        const monthName = document.getElementById("monthName");
+        monthName.textContent = months[currentMonth];
+        calendar.innerHTML = "";
+
+        const daysInMonth = new Date(
+          currentYear,
+          currentMonth + 1,
+          0
+        ).getDate();
+
+        for (let i = 1; i <= daysInMonth; i++) {
+          const day = document.createElement("div");
+          day.className = "day";
+          day.textContent = i;
+
+          const dateOfThisDay = new Date(currentYear, currentMonth, i);
+          const diffFromFirstVisit = Math.floor(
+            (dateOfThisDay - firstVisitDate) / (1000 * 60 * 60 * 24)
+          );
+
+          const todayDiff = Math.floor(
+            (today - firstVisitDate) / (1000 * 60 * 60 * 24)
+          );
+
+          if (diffFromFirstVisit > todayDiff || diffFromFirstVisit < 0) {
+            day.classList.add("locked");
+          }
+
+          let letter;
+          day.addEventListener("click", function () {
+            const alreadyOpened = day.classList.contains("opened");
+            if (alreadyOpened) {
+              day.classList.remove("opened");
+              if (letter) {
+                letter.classList.remove("show");
+                setTimeout(() => letter.remove(), 500);
+              }
+            } else {
+              if (day.classList.contains("locked")) return;
+
+              day.classList.add("opened");
+
+              letter = document.createElement("div");
+              letter.className = "letter show";
+              letter.textContent = getMessage(currentMonth + 1, i);
+              document.body.appendChild(letter);
+
+              const rect = day.getBoundingClientRect();
+              letter.style.top = `${rect.top + rect.height / 2}px`;
+              letter.style.left = `${rect.left + rect.width / 2}px`;
+            }
+          });
+
+          calendar.appendChild(day);
+        }
+      }
+
+      function prevMonth() {
+        currentMonth = (currentMonth - 1 + 12) % 12;
+        updateCalendar();
+      }
+
+      function nextMonth() {
+        currentMonth = (currentMonth + 1) % 12;
+        updateCalendar();
+      }
+    </script>
+  </body>
+</html>
