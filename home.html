@@ -48,6 +48,86 @@
       .login-container img:hover {
         transform: scale(1.1) rotate(-5deg);
       }
+      .login-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        background: #fff0f5;
+        padding: 28px;
+        border-radius: 18px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        width: min(90%, 400px);
+      }
+
+      .login-container img {
+        width: 100px;
+        height: auto;
+        margin-bottom: 10px;
+      }
+
+      .login-container h1 {
+        font-family: "Pacifico", cursive;
+        color: #d94a74;
+        margin-bottom: 16px;
+      }
+
+      .login-container input {
+        width: 100%;
+        padding: 12px 14px;
+        border: 2px solid #f4a3b3;
+        border-radius: 12px;
+        font-size: 16px;
+        outline: none;
+      }
+
+      .input-group {
+        position: relative;
+        width: 100%;
+      }
+
+      .input-group input {
+        padding-right: 42px; /* ruimte voor het oogje */
+      }
+
+      .toggle-password {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        font-size: 18px;
+        color: #d94a74;
+        user-select: none;
+        transition: transform 0.2s;
+      }
+
+      .toggle-password:hover {
+        transform: translateY(-50%) scale(1.2);
+      }
+
+      .login-container button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #ffeef3;
+        color: #d94a74;
+        border: 2px solid #f4a3b3;
+        cursor: pointer;
+        border-radius: 10px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .login-container button:hover {
+        background-color: #fcd6e1;
+        transform: scale(1.05);
+      }
+
+      .error {
+        margin-top: 10px;
+        color: red;
+        font-size: 14px;
+      }
 
       h1 {
         font-family: "Pacifico", cursive;
@@ -126,13 +206,19 @@
     <div class="login-container">
       <img src="image.png" alt="Jouw Liefde" />
       <h1>Welkom Liefje 💖</h1>
+
       <input type="text" id="username" placeholder="Voornaam" />
       <input type="text" id="Famusername" placeholder="Familienaam" />
-      <input
-        type="password"
-        id="password"
-        placeholder="Datum van start relatie, bv(22/10/2007)"
-      />
+
+      <div class="input-group">
+        <input
+          type="password"
+          id="password"
+          placeholder="Datum van start relatie, bv(22/10/2007)"
+        />
+        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+      </div>
+
       <button onclick="checkLogin()">Inloggen</button>
       <div class="error" id="errorMsg"></div>
     </div>
@@ -143,6 +229,18 @@
         famusername: "d'hooghe",
         password: "20/04/2025",
       };
+      function togglePassword() {
+        const passwordInput = document.getElementById("password");
+        const toggleBtn = document.querySelector(".toggle-password");
+
+        if (passwordInput.type === "password") {
+          passwordInput.type = "text";
+          toggleBtn.textContent = "🙈";
+        } else {
+          passwordInput.type = "password";
+          toggleBtn.textContent = "👁️";
+        }
+      }
 
       function checkLogin() {
         const user = document.getElementById("username").value;
