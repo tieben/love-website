@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Advent Hart</title>
+    <title>Liefdes Login</title>
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@400;600&display=swap");
 
@@ -18,513 +18,174 @@
         justify-content: center;
         align-items: center;
         height: 100vh;
-        background: linear-gradient(145deg, #ffe4ec, #ffd6e1);
         font-family: "Quicksand", sans-serif;
-        position: relative;
+        background: linear-gradient(135deg, #ffdde1, #ee9ca7);
         overflow: hidden;
+        position: relative;
       }
 
-      body::before {
-        content: "💖 💕 💗 💘 💓 💞";
-        font-size: 50px;
-        opacity: 0.05;
-        position: absolute;
-        top: 10%;
-        left: 10%;
-        transform: rotate(-20deg);
-        white-space: pre;
-        z-index: 0;
+      /* Container */
+      .login-container {
+        background-color: rgba(255, 255, 255, 0.95);
+        padding: 40px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        text-align: center;
+        z-index: 2;
+        width: 400px;
+        position: relative;
       }
 
-      button {
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #ffeef3;
+      .login-container img {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-bottom: 20px;
+        object-fit: cover;
+        border: 3px solid #ff8aa0;
+        transition: transform 0.3s;
+      }
+      .login-container img:hover {
+        transform: scale(1.1) rotate(-5deg);
+      }
+
+      h1 {
+        font-family: "Pacifico", cursive;
         color: #d94a74;
-        border: 2px solid #f4a3b3;
-        cursor: pointer;
+        margin-bottom: 20px;
+        font-size: 32px;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
         border-radius: 10px;
-        font-weight: bold;
+        border: 2px solid #f4a3b3;
+        font-size: 16px;
+        outline: none;
         transition: all 0.3s ease;
       }
-
-      button:hover {
-        background-color: #fcd6e1;
+      input:focus {
+        border-color: #ff5b95;
         transform: scale(1.05);
       }
 
-      .heart {
-        position: relative;
-        width: 120vmin;
-        height: 120vmin;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-
-      .heart svg {
+      button {
         width: 100%;
-        height: 100%;
-        position: absolute;
-      }
-
-      .calendar {
-        display: grid;
-        grid-template-columns: repeat(7, 1fr);
-        gap: 10px;
-        position: absolute;
-        top: 48%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 2;
-      }
-
-      .day {
-        width: 50px;
-        height: 50px;
-        background-color: #fff0f5;
-        color: #d94a74;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-weight: bold;
-        font-size: 20px;
-        border-radius: 14px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        cursor: pointer;
-        position: relative;
-        overflow: hidden;
-        z-index: 2;
-        transition: transform 0.3s, background-color 0.3s;
-      }
-
-      .day:hover {
-        transform: scale(1.08);
-        background-color: #ffe0ea;
-      }
-
-      .locked {
-        background-color: #d8cfd0;
-        color: #9f9f9f;
-        cursor: not-allowed;
-        opacity: 0.6;
-      }
-
-      .button-container {
-        position: absolute;
-        top: 65%;
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        z-index: 3;
-      }
-
-      .month-name {
-        position: absolute;
-        top: 20%;
-        font-size: 50px;
-        color: #fff;
-        font-weight: bold;
-        font-family: "Pacifico", cursive;
-        z-index: 3;
-        text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.3);
-      }
-
-      .day.opened {
-        background-color: #f26a8d;
-        color: white;
-      }
-
-      .day.opened::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 0%;
-        height: 100%;
-        background-color: white;
-        z-index: 1;
-        transform: translate(-50%, -50%);
-        animation: openCenter 0.5s forwards;
-      }
-
-      @keyframes openCenter {
-        0% {
-          width: 0%;
-        }
-        100% {
-          width: 90%;
-        }
-      }
-
-      .letter {
-        position: absolute;
-        background-color: #fff0f5;
-        border: 2px solid #f4a3b3;
-        border-radius: 14px;
-        padding: 15px 25px;
-        font-size: 20px;
-        font-weight: bold;
-        color: #b03a63;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-        text-align: center;
-        z-index: 999;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.4s, transform 0.4s;
-        transform: translate(-50%, -50%) scale(0.1);
-        max-width: 80%;
-      }
-
-      .letter.show {
-        opacity: 1;
-        transform: translate(-50%, -250%) scale(1);
-      }
-
-      .message-area {
-        position: absolute; /* onder het hart */
-        left: 50%;
-        top: calc(
-          50% + 28vmin
-        ); /* schuif indien nodig; 28vmin ≈ onder de heart */
-        transform: translateX(-50%);
-        width: min(90vw, 800px);
-        background: rgba(255, 240, 245, 0.98);
-        border: 2px solid #f4a3b3;
-        border-radius: 16px;
-        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        padding: 16px 18px 18px 18px;
-        z-index: 999;
-        backdrop-filter: blur(3px);
-      }
-
-      .message-area.hidden {
-        display: none;
-      }
-
-      .msg-close {
-        position: absolute;
-        right: 10px;
-        top: 8px;
+        padding: 10px;
+        background-color: #ff7cae;
         border: none;
-        background: transparent;
-        font-size: 28px;
-        line-height: 1;
-        cursor: pointer;
-        color: #b03a63;
-        padding: 2px 6px;
-        border-radius: 8px;
-      }
-      .msg-close:hover {
-        background: #ffd6e1;
-      }
-
-      .message-content {
-        color: #b03a63;
-        font-weight: 600;
+        border-radius: 10px;
         font-size: 18px;
-        line-height: 1.5;
-        margin-top: 8px;
-        word-break: break-word;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+      }
+      button:hover {
+        background-color: #ff5b95;
+        transform: scale(1.05);
       }
 
-      /* Afbeeldingen en media in het bericht */
-      .message-content img,
-      .message-content video {
-        max-width: 100%;
-        height: auto;
-        border-radius: 14px;
-        display: block;
-        margin: 10px auto;
-        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
-      }
-      .message-content figure {
-        margin: 10px 0;
-        text-align: center;
-      }
-      .message-content figcaption {
-        color: #8a2f52;
-        font-size: 14px;
-        margin-top: 6px;
-        opacity: 0.9;
+      .error {
+        color: #d94a74;
+        margin-top: 10px;
+        font-weight: bold;
+        min-height: 24px;
       }
 
-      /* Kleine “appear”-animatie */
-      @keyframes msgPop {
-        from {
-          transform: translateX(-50%) translateY(8px);
+      /* Zwevende hartjes voor achtergrond */
+      .bg-heart {
+        position: absolute;
+        font-size: 20px;
+        opacity: 0.15;
+        user-select: none;
+        pointer-events: none;
+        animation-name: floatUp;
+        animation-timing-function: linear;
+        z-index: 1;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(100vh) rotate(0deg);
           opacity: 0;
         }
-        to {
-          transform: translateX(-50%) translateY(0);
-          opacity: 1;
+        50% {
+          opacity: 0.6;
         }
-      }
-      .message-area:not(.hidden) {
-        animation: msgPop 220ms ease-out;
-      }
-
-      /* Als je op mobiel minder overlap wilt, kun je top hier bijstellen */
-      @media (max-width: 600px) {
-        .message-area {
-          top: calc(50% + 32vmin);
-          padding: 14px;
-        }
-        .message-content {
-          font-size: 16px;
+        100% {
+          transform: translateY(-10vh) rotate(360deg);
+          opacity: 0;
         }
       }
     </style>
   </head>
   <body>
-    <div class="main-container">
-      <div class="heart-calendar-container">
-        <div class="heart">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <defs>
-              <!-- Hartvorm mask -->
-              <mask id="heart-mask">
-                <rect width="100%" height="100%" fill="black" />
-                <path
-                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
-                         2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
-                         C13.09 3.81 14.76 3 16.5 3
-                         19.58 3 22 5.42 22 8.5
-                         c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-                  fill="white"
-                />
-              </mask>
-
-              <g id="photos">
-                <!-- Bovenste foto's blijven hetzelfde -->
-                <image
-                  href="image.png"
-                  x="0"
-                  y="0%"
-                  width="70%"
-                  height="70%"
-                  preserveAspectRatio="xMinYMin slice"
-                />
-                <image
-                  href="bal.jpg"
-                  x="50%"
-                  y="0"
-                  width="50%"
-                  height="50%"
-                  preserveAspectRatio="xMidYMin slice"
-                />
-
-                <!-- Onderste rij: 2 foto's naast elkaar -->
-                <image
-                  href="faceMoi.png"
-                  x="0"
-                  y="50%"
-                  width="50%"
-                  height="50%"
-                  preserveAspectRatio="xMidYMid slice"
-                />
-                <image
-                  href="image copy.png"
-                  x="50%"
-                  y="50%"
-                  width="50%"
-                  height="50%"
-                  preserveAspectRatio="xMidYMid slice"
-                />
-              </g>
-            </defs>
-
-            <!-- Toepassen van hart mask op foto's -->
-            <g mask="url(#heart-mask)">
-              <use href="#photos" />
-            </g>
-          </svg>
-
-          <div class="calendar" id="calendar"></div>
-          <div class="button-container">
-            <button class="prev-button" onclick="prevMonth()">◀</button>
-            <button class="next-button" onclick="nextMonth()">▶</button>
-          </div>
-          <span class="month-name" id="monthName">April</span>
-        </div>
-        <!-- Vaste zone voor het bericht -->
-        <div id="messageArea" class="message-area hidden">
-          <button class="msg-close" aria-label="Sluiten">&times;</button>
-          <div id="messageContent" class="message-content"></div>
-        </div>
-      </div>
+    <div class="login-container">
+      <img src="image.png" alt="Jouw Liefde" />
+      <h1>Welkom Liefje 💖</h1>
+      <input type="text" id="username" placeholder="Voornaam" />
+      <input type="text" id="Famusername" placeholder="Familienaam" />
+      <input
+        type="password"
+        id="password"
+        placeholder="Datum van start relatie, bv(22/10/2007)"
+      />
+      <button onclick="checkLogin()">Inloggen</button>
+      <div class="error" id="errorMsg"></div>
     </div>
 
     <script>
-      const months = [
-        "Januari",
-        "Februari",
-        "Maart",
-        "April",
-        "Mei",
-        "Juni",
-        "Juli",
-        "Augustus",
-        "September",
-        "Oktober",
-        "November",
-        "December",
-      ];
+      const credentials = {
+        username: "irena",
+        famusername: "d'hooghe",
+        password: "20/04/2025",
+      };
 
-      let today = new Date();
-      today.setHours(0, 0, 0, 0); // Normaliseer
-      let currentMonth = today.getMonth();
-      let currentYear = today.getFullYear();
-      let messagesPerMonth = {};
-      let firstVisitDate;
+      function checkLogin() {
+        const user = document.getElementById("username").value;
+        const Famuser = document.getElementById("Famusername").value;
+        const pass = document.getElementById("password").value;
+        const errorMsg = document.getElementById("errorMsg");
 
-      fetch("./messages.json")
-        .then((response) => response.json())
-        .then((data) => {
-          messagesPerMonth = data;
-          checkFirstVisit();
-          updateCalendar();
-        })
-        .catch((error) =>
-          console.error("Fout bij het laden van het JSON-bestand:", error)
-        );
-
-      /** ---------------- HELPER FUNCTIES ---------------- */
-
-      function getMessage(month, day) {
-        const m = String(month);
-        const d = String(day);
-        const val = messagesPerMonth?.[m]?.[d];
-
-        if (!val) return { type: "text", text: "Een mooie dag gewenst 💌" };
-
-        if (typeof val === "string") {
-          // Is het een image?
-          if (/\.(png|jpe?g|gif|webp|svg)$/i.test(val)) {
-            return { type: "image", src: val };
-          }
-          // Is het HTML?
-          if (/<\/?[a-z][\s\S]*>/i.test(val)) {
-            return { type: "html", html: val };
-          }
-          return { type: "text", text: val };
-        }
-
-        if (typeof val === "object") {
-          if (val.html) return { type: "html", html: String(val.html) };
-          if (val.img || val.src)
-            return {
-              type: "image",
-              src: val.img || val.src,
-              caption: val.caption || "",
-            };
-          if (val.text) return { type: "text", text: String(val.text) };
-        }
-
-        return { type: "text", text: String(val) };
-      }
-
-      function escapeHtml(str) {
-        return String(str)
-          .replaceAll("&", "&amp;")
-          .replaceAll("<", "&lt;")
-          .replaceAll(">", "&gt;")
-          .replaceAll('"', "&quot;")
-          .replaceAll("'", "&#39;")
-          .replace(/\n/g, "<br>");
-      }
-
-      function showMessage(content) {
-        const area = document.getElementById("messageArea");
-        const box = document.getElementById("messageContent");
-        const closeBtn = area.querySelector(".msg-close");
-
-        if (content.type === "html") {
-          box.innerHTML = content.html; // ⚠️ alleen eigen content gebruiken
-        } else if (content.type === "image") {
-          const fig = document.createElement("figure");
-          const img = document.createElement("img");
-          img.src = content.src;
-          img.alt = content.caption || "Foto";
-          fig.appendChild(img);
-          if (content.caption) {
-            const cap = document.createElement("figcaption");
-            cap.textContent = content.caption;
-            fig.appendChild(cap);
-          }
-          box.innerHTML = "";
-          box.appendChild(fig);
+        if (
+          user === credentials.username &&
+          pass === credentials.password &&
+          Famuser === credentials.famusername
+        ) {
+          errorMsg.style.color = "#4CAF50";
+          errorMsg.textContent = "Inloggen gelukt! 💖";
+          createHearts(30);
+          setTimeout(() => {
+            window.location.href = "heart.html";
+          }, 1200);
         } else {
-          box.innerHTML = escapeHtml(content.text);
-        }
-
-        area.classList.remove("hidden");
-        closeBtn.onclick = () => area.classList.add("hidden");
-      }
-
-      /** ---------------- INIT FUNCTIES ---------------- */
-
-      function checkFirstVisit() {
-        const stored = localStorage.getItem("firstVisitDate");
-        if (stored) {
-          firstVisitDate = new Date(stored);
-          firstVisitDate.setHours(0, 0, 0, 0);
-        } else {
-          firstVisitDate = new Date(today);
-          localStorage.setItem("firstVisitDate", firstVisitDate.toISOString());
+          errorMsg.style.color = "#d94a74";
+          errorMsg.textContent = "Oeps! Verkeerde inlog 😘";
+          createHearts(10);
         }
       }
 
-      function updateCalendar() {
-        const calendar = document.getElementById("calendar");
-        const monthName = document.getElementById("monthName");
-        monthName.textContent = months[currentMonth];
-        calendar.innerHTML = "";
-
-        const daysInMonth = new Date(
-          currentYear,
-          currentMonth + 1,
-          0
-        ).getDate();
-
-        for (let i = 1; i <= daysInMonth; i++) {
-          const day = document.createElement("div");
-          day.className = "day";
-          day.textContent = i;
-
-          const dateOfThisDay = new Date(currentYear, currentMonth, i);
-
-          // 🔒 Lock dagen vóór eerste login en na vandaag
-          if (dateOfThisDay < firstVisitDate || dateOfThisDay > today) {
-            day.classList.add("locked");
-          }
-
-          day.addEventListener("click", () => {
-            if (day.classList.contains("locked")) return;
-
-            // Highlight
-            day.classList.add("opened");
-
-            // Toon boodschap in vaste box
-            const content = getMessage(currentMonth + 1, i);
-            showMessage(content);
-          });
-
-          calendar.appendChild(day);
+      // Functie voor zwevende hartjes op login
+      function createHearts(count) {
+        for (let i = 0; i < count; i++) {
+          const heart = document.createElement("div");
+          heart.classList.add("bg-heart");
+          heart.textContent = "💖";
+          heart.style.left = Math.random() * 100 + "vw";
+          heart.style.fontSize = 10 + Math.random() * 30 + "px";
+          heart.style.animationDuration = 5 + Math.random() * 5 + "s";
+          document.body.appendChild(heart);
+          setTimeout(() => heart.remove(), 10000);
         }
       }
 
-      function prevMonth() {
-        currentMonth = (currentMonth - 1 + 12) % 12;
-        if (currentMonth === 11) currentYear--; // Jaar terug
-        updateCalendar();
-      }
-
-      function nextMonth() {
-        currentMonth = (currentMonth + 1) % 12;
-        if (currentMonth === 0) currentYear++; // Jaar vooruit
-        updateCalendar();
-      }
+      // Permanent achtergrond hartjes
+      setInterval(() => {
+        createHearts(3);
+      }, 500);
     </script>
   </body>
 </html>
