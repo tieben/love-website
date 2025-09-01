@@ -24,7 +24,6 @@
         overflow: hidden;
       }
 
-      /* Floating hearts in background */
       body::before {
         content: "💖 💕 💗 💘 💓 💞";
         font-size: 50px;
@@ -56,23 +55,17 @@
 
       .heart {
         position: relative;
-        width: 1200px; /* Vergroot het hart */
-        height: 1200px; /* Vergroot het hart */
+        width: 120vmin;
+        height: 120vmin;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-position: center;
-        background-repeat: no-repeat;
-        border-radius: 50%;
       }
 
-      /* Verwijder de vorige kleur van het hart */
       .heart svg {
         width: 100%;
         height: 100%;
         position: absolute;
-        opacity: 1;
-        fill: url(#heart-pattern);
       }
 
       .calendar {
@@ -87,8 +80,8 @@
       }
 
       .day {
-        width: 70px;
-        height: 70px;
+        width: 50px;
+        height: 50px;
         background-color: #fff0f5;
         color: #d94a74;
         display: flex;
@@ -187,6 +180,100 @@
         opacity: 1;
         transform: translate(-50%, -250%) scale(1);
       }
+
+      .message-area {
+        position: absolute; /* onder het hart */
+        left: 50%;
+        top: calc(
+          50% + 28vmin
+        ); /* schuif indien nodig; 28vmin ≈ onder de heart */
+        transform: translateX(-50%);
+        width: min(90vw, 800px);
+        background: rgba(255, 240, 245, 0.98);
+        border: 2px solid #f4a3b3;
+        border-radius: 16px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        padding: 16px 18px 18px 18px;
+        z-index: 999;
+        backdrop-filter: blur(3px);
+      }
+
+      .message-area.hidden {
+        display: none;
+      }
+
+      .msg-close {
+        position: absolute;
+        right: 10px;
+        top: 8px;
+        border: none;
+        background: transparent;
+        font-size: 28px;
+        line-height: 1;
+        cursor: pointer;
+        color: #b03a63;
+        padding: 2px 6px;
+        border-radius: 8px;
+      }
+      .msg-close:hover {
+        background: #ffd6e1;
+      }
+
+      .message-content {
+        color: #b03a63;
+        font-weight: 600;
+        font-size: 18px;
+        line-height: 1.5;
+        margin-top: 8px;
+        word-break: break-word;
+      }
+
+      /* Afbeeldingen en media in het bericht */
+      .message-content img,
+      .message-content video {
+        max-width: 100%;
+        height: auto;
+        border-radius: 14px;
+        display: block;
+        margin: 10px auto;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.15);
+      }
+      .message-content figure {
+        margin: 10px 0;
+        text-align: center;
+      }
+      .message-content figcaption {
+        color: #8a2f52;
+        font-size: 14px;
+        margin-top: 6px;
+        opacity: 0.9;
+      }
+
+      /* Kleine “appear”-animatie */
+      @keyframes msgPop {
+        from {
+          transform: translateX(-50%) translateY(8px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+        }
+      }
+      .message-area:not(.hidden) {
+        animation: msgPop 220ms ease-out;
+      }
+
+      /* Als je op mobiel minder overlap wilt, kun je top hier bijstellen */
+      @media (max-width: 600px) {
+        .message-area {
+          top: calc(50% + 32vmin);
+          padding: 14px;
+        }
+        .message-content {
+          font-size: 16px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -195,29 +282,62 @@
         <div class="heart">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
             <defs>
-              <!-- Definieer een patroon met de afbeelding -->
-              <pattern
-                id="heart-pattern"
-                patternUnits="userSpaceOnUse"
-                width="100%"
-                height="100%"
-              >
-                <!-- Zet hier de link naar je afbeelding -->
+              <!-- Hartvorm mask -->
+              <mask id="heart-mask">
+                <rect width="100%" height="100%" fill="black" />
+                <path
+                  d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5
+                         2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09
+                         C13.09 3.81 14.76 3 16.5 3
+                         19.58 3 22 5.42 22 8.5
+                         c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
+                  fill="white"
+                />
+              </mask>
+
+              <g id="photos">
+                <!-- Bovenste foto's blijven hetzelfde -->
                 <image
-                  href="red.jpg"
+                  href="image.png"
                   x="0"
+                  y="0%"
+                  width="70%"
+                  height="70%"
+                  preserveAspectRatio="xMinYMin slice"
+                />
+                <image
+                  href="bal.jpg"
+                  x="50%"
                   y="0"
-                  width="100%"
-                  height="100%"
+                  width="50%"
+                  height="50%"
+                  preserveAspectRatio="xMidYMin slice"
+                />
+
+                <!-- Onderste rij: 2 foto's naast elkaar -->
+                <image
+                  href="faceMoi.png"
+                  x="0"
+                  y="50%"
+                  width="50%"
+                  height="50%"
                   preserveAspectRatio="xMidYMid slice"
                 />
-              </pattern>
+                <image
+                  href="image copy.png"
+                  x="50%"
+                  y="50%"
+                  width="50%"
+                  height="50%"
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </g>
             </defs>
 
-            <!-- De hartvorm wordt gevuld met de afbeelding -->
-            <path
-              d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"
-            />
+            <!-- Toepassen van hart mask op foto's -->
+            <g mask="url(#heart-mask)">
+              <use href="#photos" />
+            </g>
           </svg>
 
           <div class="calendar" id="calendar"></div>
@@ -226,6 +346,11 @@
             <button class="next-button" onclick="nextMonth()">▶</button>
           </div>
           <span class="month-name" id="monthName">April</span>
+        </div>
+        <!-- Vaste zone voor het bericht -->
+        <div id="messageArea" class="message-area hidden">
+          <button class="msg-close" aria-label="Sluiten">&times;</button>
+          <div id="messageContent" class="message-content"></div>
         </div>
       </div>
     </div>
@@ -247,11 +372,10 @@
       ];
 
       let today = new Date();
+      today.setHours(0, 0, 0, 0); // Normaliseer
       let currentMonth = today.getMonth();
-      let currentDay = today.getDate();
       let currentYear = today.getFullYear();
       let messagesPerMonth = {};
-
       let firstVisitDate;
 
       fetch("./messages.json")
@@ -265,21 +389,89 @@
           console.error("Fout bij het laden van het JSON-bestand:", error)
         );
 
+      /** ---------------- HELPER FUNCTIES ---------------- */
+
       function getMessage(month, day) {
-        if (messagesPerMonth[month] && messagesPerMonth[month][day]) {
-          return messagesPerMonth[month][day];
-        } else {
-          return "Een mooie dag gewenst 💌";
+        const m = String(month);
+        const d = String(day);
+        const val = messagesPerMonth?.[m]?.[d];
+
+        if (!val) return { type: "text", text: "Een mooie dag gewenst 💌" };
+
+        if (typeof val === "string") {
+          // Is het een image?
+          if (/\.(png|jpe?g|gif|webp|svg)$/i.test(val)) {
+            return { type: "image", src: val };
+          }
+          // Is het HTML?
+          if (/<\/?[a-z][\s\S]*>/i.test(val)) {
+            return { type: "html", html: val };
+          }
+          return { type: "text", text: val };
         }
+
+        if (typeof val === "object") {
+          if (val.html) return { type: "html", html: String(val.html) };
+          if (val.img || val.src)
+            return {
+              type: "image",
+              src: val.img || val.src,
+              caption: val.caption || "",
+            };
+          if (val.text) return { type: "text", text: String(val.text) };
+        }
+
+        return { type: "text", text: String(val) };
       }
+
+      function escapeHtml(str) {
+        return String(str)
+          .replaceAll("&", "&amp;")
+          .replaceAll("<", "&lt;")
+          .replaceAll(">", "&gt;")
+          .replaceAll('"', "&quot;")
+          .replaceAll("'", "&#39;")
+          .replace(/\n/g, "<br>");
+      }
+
+      function showMessage(content) {
+        const area = document.getElementById("messageArea");
+        const box = document.getElementById("messageContent");
+        const closeBtn = area.querySelector(".msg-close");
+
+        if (content.type === "html") {
+          box.innerHTML = content.html; // ⚠️ alleen eigen content gebruiken
+        } else if (content.type === "image") {
+          const fig = document.createElement("figure");
+          const img = document.createElement("img");
+          img.src = content.src;
+          img.alt = content.caption || "Foto";
+          fig.appendChild(img);
+          if (content.caption) {
+            const cap = document.createElement("figcaption");
+            cap.textContent = content.caption;
+            fig.appendChild(cap);
+          }
+          box.innerHTML = "";
+          box.appendChild(fig);
+        } else {
+          box.innerHTML = escapeHtml(content.text);
+        }
+
+        area.classList.remove("hidden");
+        closeBtn.onclick = () => area.classList.add("hidden");
+      }
+
+      /** ---------------- INIT FUNCTIES ---------------- */
 
       function checkFirstVisit() {
         const stored = localStorage.getItem("firstVisitDate");
-        if (!stored) {
-          localStorage.setItem("firstVisitDate", today.toISOString());
-          firstVisitDate = new Date(today);
-        } else {
+        if (stored) {
           firstVisitDate = new Date(stored);
+          firstVisitDate.setHours(0, 0, 0, 0);
+        } else {
+          firstVisitDate = new Date(today);
+          localStorage.setItem("firstVisitDate", firstVisitDate.toISOString());
         }
       }
 
@@ -301,41 +493,21 @@
           day.textContent = i;
 
           const dateOfThisDay = new Date(currentYear, currentMonth, i);
-          const diffFromFirstVisit = Math.floor(
-            (dateOfThisDay - firstVisitDate) / (1000 * 60 * 60 * 24)
-          );
 
-          const todayDiff = Math.floor(
-            (today - firstVisitDate) / (1000 * 60 * 60 * 24)
-          );
-
-          if (diffFromFirstVisit > todayDiff || diffFromFirstVisit < 0) {
+          // 🔒 Lock dagen vóór eerste login en na vandaag
+          if (dateOfThisDay < firstVisitDate || dateOfThisDay > today) {
             day.classList.add("locked");
           }
 
-          let letter;
-          day.addEventListener("click", function () {
-            const alreadyOpened = day.classList.contains("opened");
-            if (alreadyOpened) {
-              day.classList.remove("opened");
-              if (letter) {
-                letter.classList.remove("show");
-                setTimeout(() => letter.remove(), 500);
-              }
-            } else {
-              if (day.classList.contains("locked")) return;
+          day.addEventListener("click", () => {
+            if (day.classList.contains("locked")) return;
 
-              day.classList.add("opened");
+            // Highlight
+            day.classList.add("opened");
 
-              letter = document.createElement("div");
-              letter.className = "letter show";
-              letter.textContent = getMessage(currentMonth + 1, i);
-              document.body.appendChild(letter);
-
-              const rect = day.getBoundingClientRect();
-              letter.style.top = `${rect.top + rect.height / 2}px`;
-              letter.style.left = `${rect.left + rect.width / 2}px`;
-            }
+            // Toon boodschap in vaste box
+            const content = getMessage(currentMonth + 1, i);
+            showMessage(content);
           });
 
           calendar.appendChild(day);
@@ -344,11 +516,13 @@
 
       function prevMonth() {
         currentMonth = (currentMonth - 1 + 12) % 12;
+        if (currentMonth === 11) currentYear--; // Jaar terug
         updateCalendar();
       }
 
       function nextMonth() {
         currentMonth = (currentMonth + 1) % 12;
+        if (currentMonth === 0) currentYear++; // Jaar vooruit
         updateCalendar();
       }
     </script>
